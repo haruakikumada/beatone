@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ビートワンボーリング大会</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+        
+        body {
+            background-image: url("beer.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            text-shadow: 1px 1px 4px #000;
+            position: relative;
+        }
+        
+        .movie-window {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: #1a1a1a;
+            border: 8px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            z-index: 100;
+        }
+        
+        .movie-screen {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+        
+        .movie-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        .movie-slide.active {
+            opacity: 1;
+        }
+        
+        .movie-slide:nth-child(1) {
+            background-image: url("kanachan.JPG");
+        }
+        
+        .movie-slide:nth-child(2) {
+            background-image: url("photo2.jpg");
+        }
+        
+        .movie-slide:nth-child(3) {
+            background-image: url("photo3.jpg");
+        }
+        
+        .movie-slide:nth-child(4) {
+            background-image: url("photo4.jpg");
+        }
+        
+        .movie-slide:nth-child(5) {
+            background-image: url("photo5.jpg");
+        }
+        
+        .movie-slide:nth-child(6) {
+            background-image: url("photo6.jpg");
+        }
+        
+        .movie-slide:nth-child(7) {
+            background-image: url("photo7.jpg");
+        }
+        
+        .movie-window::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #444, #666, #444);
+            border-radius: 16px;
+            z-index: -1;
+        }
+        
+        .movie-window::after {
+            content: 'LIVE';
+            position: absolute;
+            top: -6px;
+            left: 10px;
+            background: #ff0000;
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .overlay {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        h1 {
+            font-size: 1.5em;
+            margin: 0 0 20px 0;
+        }
+        
+        .subtitle {
+            font-size: 1em;
+            margin-bottom: 30px;
+        }
+        
+        .announcement {
+            font-size: 0.9em;
+            line-height: 1.6;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .announcement h2 {
+            color: #FFD700;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+            text-align: center;
+        }
+        
+        .announcement p {
+            margin: 10px 0;
+        }
+        
+        .event-details {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .bowling-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 10px;
+        }
+        
+        .bowling-ball {
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .bowling-ball::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 4px 0 white, 2px 4px white;
+        }
+        
+        .bowling-pin {
+            width: 4px;
+            height: 16px;
+            background: white;
+            border-radius: 2px 2px 0 0;
+            position: relative;
+            margin: 0 1px;
+        }
+        
+        .bowling-pin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .bowling-pins {
+            display: flex;
+            align-items: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="movie-window">
+        <div class="movie-screen">
+            <div class="movie-slide active"></div>
+            <div class="movie-slide"></div>
+            <div class="movie-slide"></div>
+            <div class="movie-slide"></div>
+            <div class="movie-slide"></div>
+            <div class="movie-slide"></div>
+            <div class="movie-slide"></div>
+        </div>
+    </div>
+    
+    <div class="overlay">
+        <h1>第４回ビートワンボーリング大会</h1>
+        <p class="subtitle">業界１ロースコアな大会</p>
+        
+        <div class="announcement">
+            <h2>🎳🔥**笑いと汗とビールが交差する！ ボーリング＆宴の二部構成イベント！**🔥🍻</h2>
+            
+            <p>夏の終わりに、最高の"盛り上がり"をご用意しました！ 今年の主役は、そう、あなたです！！</p>
+            
+            <div class="event-details">
+                <h2>
+                    <div class="bowling-icon">
+                        <div class="bowling-ball"></div>
+                        <div class="bowling-pins">
+                            <div class="bowling-pin"></div>
+                            <div class="bowling-pin"></div>
+                            <div class="bowling-pin"></div>
+                        </div>
+                    </div>
+                    🎯**第一部：ボーリングバトル2025 〜栄光のストライクをこの手に！〜**
+                </h2>
+                <p>🗓<strong>日程：</strong>2025年8月30日（土）</p>
+                <p>🕐<strong>時間：</strong>13:00〜15:00（受付開始：12:30〜）</p>
+                <p>📍<strong>会場：</strong>OKKA634（オッカムサシ）</p>
+                <p>〒213-0001 神奈川県川崎市高津区溝口1-11-8</p>
+                <p>📞044-833-6211</p>
+                <p>💰<strong>参加費：</strong>５,０００円ぽっきり（ボーリング代・靴代・ドリンク込み）</p>
+                
+                <p><strong>🚃アクセス：</strong></p>
+                <p>・東急田園都市線／大井町線「溝の口駅」正面口より徒歩2分</p>
+                <p>・JR南武線「武蔵溝ノ口駅」北口より徒歩2分</p>
+            </div>
+            
+            <div class="event-details">
+                <h2>🍻**第二部：宴の陣 in 居酒屋・匠 〜飲め、食え、勝ち抜けろ！？〜**</h2>
+                <p>ボーリングで燃え尽きた後は、腹を満たして心も満たす宴へ突入！ 会場すぐそばの名店「<strong>居酒屋・匠</strong>」にて開催！</p>
+                
+                <p><strong>🎁イベント盛りだくさん：</strong></p>
+                <p>・ワイワイ楽しい<strong>じゃんけん大会！</strong></p>
+                <p>・緊張と爆笑の<strong>ボーリング表彰式！</strong></p>
+                <p>・勝者も敗者も大歓迎、飲んで食べてリセットOK！</p>
+            </div>
+            
+            <p>👑スコアより大事なのはノリと勢い。 ガーターだっていいじゃない、笑顔があれば！ 一緒に最高の夏の思い出を作りましょう！</p>
+        </div>
+    </div>
+    
+    <script>
+        // 映画ウィンドウ内スライドショー機能
+        let currentSlide = 0;
+        const movieSlides = document.querySelectorAll('.movie-slide');
+        const totalSlides = movieSlides.length;
+        
+        function showNextSlide() {
+            // 現在のスライドを非アクティブに
+            movieSlides[currentSlide].classList.remove('active');
+            
+            // 次のスライドへ
+            currentSlide = (currentSlide + 1) % totalSlides;
+            
+            // 新しいスライドをアクティブに
+            movieSlides[currentSlide].classList.add('active');
+        }
+        
+        // 4秒ごとにスライドを切り替え
+        setInterval(showNextSlide, 4000);
+        
+        // 映画ウィンドウクリックでスライド切り替え
+        document.querySelector('.movie-window').addEventListener('click', showNextSlide);
+        
+        // 手動でのスライド切り替え（キーボード操作）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                showNextSlide();
+            }
+        });
+    </script>
+</body>
+</html>
